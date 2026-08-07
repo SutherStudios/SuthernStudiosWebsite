@@ -1,0 +1,232 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/Button.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import Tag from '../../components/Tag.astro';
+import { formatDotted, toISODate } from '../../utils/date';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('devlog', ({ data }) => import.meta.env.DEV || !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.summary}
+  type="article"
+  publishedDate={post.data.date}
+  noindex={post.data.draft}
+>
+  <article class="container container--sm page">
+    <a href="/devlog/" class="back">&larr; All entries</a>
+
+    <Eyebrow>// Build log</Eyebrow>
+
+    <h1 class="post__title">{post.data.title}</h1>
+
+    <div class="post__meta">
+      <time datetime={toISODate(post.data.date)} class="post__date">
+        {formatDotted(post.data.date)}
+      </time>
+      {post.data.build && <span class="post__build">build {post.data.build}</span>}
+      <Tag>{post.data.tag}</Tag>
+      {post.data.draft && <Tag active>Draft</Tag>}
+    </div>
+
+    <p class="post__summary">{post.data.summary}</p>
+
+    <hr />
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <div class="post__foot">
+      <Button variant="ghost" href="/devlog/" leadingIcon="arrow-left">Back to devlog</Button>
+    </div>
+  </article>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: var(--space-10);
+  }
+
+  .back {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: var(--space-8);
+  }
+
+  .back:hover {
+    color: var(--ember-400);
+  }
+
+  .post__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(30px, 5vw, 42px);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin: var(--space-4) 0 var(--space-5);
+  }
+
+  .post__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+  }
+
+  .post__date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .post__build {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent-2);
+  }
+
+  .post__summary {
+    font-size: var(--text-md);
+    line-height: var(--lh-relaxed);
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-8);
+  }
+
+  .post__foot {
+    margin-top: var(--space-11);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  /* ---- MARKDOWN PROSE ---- */
+
+  .prose {
+    margin-top: var(--space-8);
+    font-size: var(--text-base);
+    line-height: 1.8;
+    color: var(--text-body);
+  }
+
+  .prose :global(p) {
+    margin: 0 0 var(--space-6);
+  }
+
+  .prose :global(h2) {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--text-xl);
+    color: var(--text-primary);
+    margin: var(--space-10) 0 var(--space-5);
+    letter-spacing: -0.01em;
+  }
+
+  .prose :global(h3) {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--text-md);
+    color: var(--text-primary);
+    margin: var(--space-8) 0 var(--space-4);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 var(--space-6);
+    padding-left: var(--space-7);
+  }
+
+  .prose :global(li) {
+    margin-bottom: var(--space-3);
+  }
+
+  .prose :global(li::marker) {
+    color: var(--ember-500);
+  }
+
+  .prose :global(a) {
+    color: var(--ember-400);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose :global(strong) {
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  .prose :global(blockquote) {
+    margin: var(--space-7) 0;
+    padding: var(--space-5) var(--space-6);
+    border-left: 3px solid var(--ember-500);
+    background: var(--ink-800);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    color: var(--text-secondary);
+  }
+
+  .prose :global(blockquote p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--ink-800);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xs);
+    padding: 2px 6px;
+    color: var(--cyan-400);
+  }
+
+  .prose :global(pre) {
+    background: var(--ink-1000);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    overflow-x: auto;
+    margin: 0 0 var(--space-6);
+  }
+
+  .prose :global(pre code) {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: inherit;
+  }
+
+  .prose :global(img) {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    margin-block: var(--space-7);
+  }
+
+  .prose :global(hr) {
+    margin-block: var(--space-9);
+  }
+
+  @media (max-width: 720px) {
+    .page {
+      padding-top: var(--space-8);
+    }
+  }
+</style>

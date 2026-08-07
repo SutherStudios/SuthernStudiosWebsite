@@ -1,0 +1,76 @@
+/* ============================================================
+   SUTHERN STUDIOS — PATTERNS & UTILITIES
+   Reusable motif helpers built on the tokens. Optional sugar for
+   cards, kits and specimens — components style themselves inline.
+   ============================================================ */
+
+/* Base reset for design-system surfaces */
+.ss-root {
+  background: var(--bg-app);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: var(--body-line);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Blueprint vector grid (the 80s horizon plane) */
+.ss-grid-bg {
+  background-color: var(--bg-app);
+  background-image: var(--grid-lines);
+  background-size: var(--grid-size);
+}
+
+/* Sunset radial wash — hero atmospheres */
+.ss-sunset-bg {
+  background:
+    radial-gradient(120% 90% at 50% 120%, rgba(255,107,61,0.20), transparent 60%),
+    radial-gradient(80% 60% at 50% 0%, rgba(123,91,255,0.14), transparent 60%),
+    var(--bg-app);
+}
+
+/* Machined chamfered panel */
+.ss-chamfer    { clip-path: var(--chamfer-md); }
+.ss-chamfer-sm { clip-path: var(--chamfer-sm); }
+.ss-chamfer-lg { clip-path: var(--chamfer-lg); }
+
+/* Eyebrow / kicker label */
+.ss-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-2);
+  font-weight: var(--fw-medium);
+}
+
+/* Gradient text (sunset) */
+.ss-grad-text {
+  background: var(--grad-sunset);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hairline accent rule */
+.ss-rule {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--border-subtle) 12%, var(--border-strong) 50%, var(--border-subtle) 88%, transparent);
+}
+
+/* Layout container */
+.ss-container {
+  width: 100%;
+  max-width: var(--container-lg);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Card surface */
+.ss-card {
+  background: var(--surface-2);
+  border: var(--border-hair);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2), var(--shadow-inset);
+}

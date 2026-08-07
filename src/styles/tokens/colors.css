@@ -1,0 +1,83 @@
+/* ============================================================
+   SUTHERN STUDIOS — COLOR SYSTEM
+   Dark-first. Cool blue-tinted ink neutrals, a warm ember-orange
+   primary (the "sunset"), an electric cyan secondary, and a tightly
+   rationed set of pop hues used only in the signature sunset gradient.
+   ============================================================ */
+
+:root {
+  /* ---- INK NEUTRALS (cool, blue-tinted) ---- */
+  --ink-1000: #06080D;  /* pure void — behind everything */
+  --ink-900:  #0A0C13;  /* app canvas */
+  --ink-800:  #0F1320;  /* base surface */
+  --ink-700:  #161B2B;  /* card / panel */
+  --ink-600:  #1E2436;  /* raised / hover surface */
+  --ink-500:  #2A3147;  /* strong border */
+  --ink-400:  #3B4458;  /* border */
+  --ink-300:  #5C6680;  /* disabled / faint text */
+  --ink-200:  #8A93AC;  /* secondary text */
+  --ink-100:  #C2C9DA;  /* body text */
+  --ink-050:  #E7EBF3;  /* high-emphasis text */
+  --white:    #FFFFFF;
+
+  /* ---- EMBER (primary — retro sunset orange) ---- */
+  --ember-700: #C23E18;
+  --ember-600: #E8542A;
+  --ember-500: #FF6B3D;  /* PRIMARY accent */
+  --ember-400: #FF8A5C;
+  --ember-300: #FFA980;
+  --ember-tint: rgba(255, 107, 61, 0.14);
+
+  /* ---- CYAN (secondary — electric retro cyan) ---- */
+  --cyan-700: #128A92;
+  --cyan-600: #1BB2BC;
+  --cyan-500: #2BD6DE;  /* SECONDARY accent */
+  --cyan-400: #5FE4EA;
+  --cyan-tint: rgba(43, 214, 222, 0.14);
+
+  /* ---- POP HUES (gradient + sparing emphasis only) ---- */
+  --magenta-500: #FF4E8A;
+  --violet-500:  #7B5BFF;
+  --gold-500:    #FFB23E;   /* heritage amber nod */
+
+  /* ---- SEMANTIC ---- */
+  --success-500: #34D399;
+  --warning-500: #FFB23E;
+  --danger-500:  #FF5247;
+  --info-500:    #2BD6DE;
+  --success-tint: rgba(52, 211, 153, 0.14);
+  --warning-tint: rgba(255, 178, 62, 0.14);
+  --danger-tint:  rgba(255, 82, 71, 0.14);
+
+  /* ---- SIGNATURE GRADIENTS ---- */
+  --grad-sunset: linear-gradient(100deg, var(--gold-500) 0%, var(--ember-500) 38%, var(--magenta-500) 74%, var(--violet-500) 100%);
+  --grad-ember:  linear-gradient(120deg, var(--ember-400), var(--ember-600));
+  --grad-cyan:   linear-gradient(120deg, var(--cyan-400), var(--cyan-600));
+  --grad-horizon: linear-gradient(180deg, var(--violet-500) 0%, var(--magenta-500) 42%, var(--ember-500) 78%, var(--gold-500) 100%);
+
+  /* ============================================================
+     SEMANTIC ALIASES — reference these in components
+     ============================================================ */
+  --bg-app:        var(--ink-900);
+  --bg-void:       var(--ink-1000);
+  --surface-1:     var(--ink-800);
+  --surface-2:     var(--ink-700);
+  --surface-raised:var(--ink-600);
+
+  --text-primary:   var(--ink-050);
+  --text-body:      var(--ink-100);
+  --text-secondary: var(--ink-200);
+  --text-muted:     var(--ink-300);
+  --text-inverse:   var(--ink-1000);
+
+  --accent:         var(--ember-500);
+  --accent-hover:   var(--ember-400);
+  --accent-press:   var(--ember-600);
+  --accent-2:       var(--cyan-500);
+
+  --border-subtle:  var(--ink-500);
+  --border-strong:  var(--ink-400);
+  --border-accent:  var(--ember-500);
+
+  --focus-ring:     var(--cyan-500);
+}

@@ -1,0 +1,137 @@
+---
+import { SITE, NAV_LINKS, SOCIALS } from '../config';
+import Icon from './Icon.astro';
+
+const year = new Date().getFullYear();
+// Social links still pointing at '#' are unconfigured — don't ship dead links.
+const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <img src="/assets/logo-mark-512.png" alt="" width="34" height="34" class="footer__mark" />
+      <div>
+        <div class="footer__name">{SITE.name}</div>
+        <div class="footer__meta">© {year} — Built solo, in the open.</div>
+      </div>
+    </div>
+
+    <nav class="footer__nav" aria-label="Footer">
+      {NAV_LINKS.map((link) => <a href={link.href} class="footer__link">{link.label}</a>)}
+    </nav>
+
+    <div class="footer__socials">
+      {
+        socials.map((social) => (
+          <a
+            href={social.href}
+            class="footer__social"
+            aria-label={social.label}
+            title={social.label}
+            target={social.href.startsWith('http') ? '_blank' : undefined}
+            rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+          >
+            <Icon name={social.icon} size={18} />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border-subtle);
+    padding-block: var(--space-9);
+    margin-top: auto;
+  }
+
+  .footer__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+  }
+
+  .footer__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .footer__mark {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--space-3);
+    image-rendering: pixelated;
+  }
+
+  .footer__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .footer__meta {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    letter-spacing: var(--tracking-wide);
+    margin-top: 2px;
+  }
+
+  .footer__nav {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+
+  .footer__link {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .footer__link:hover {
+    color: var(--ember-400);
+  }
+
+  .footer__socials {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .footer__social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .footer__social:hover {
+    color: var(--cyan-400);
+    border-color: var(--cyan-600);
+  }
+
+  @media (max-width: 720px) {
+    .footer__inner {
+      justify-content: flex-start;
+    }
+  }
+</style>

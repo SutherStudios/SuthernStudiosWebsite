@@ -1,0 +1,57 @@
+/* ============================================================
+   SUTHERN STUDIOS — EFFECTS
+   Radii, borders, elevation, signature glows, easing, the
+   chamfered-corner motif, and the blueprint grid background.
+   ============================================================ */
+
+:root {
+  /* ---- RADII ----
+     Moderate rounding. The signature "machined" corner is a
+     chamfer (clip-path), not a big radius — see --chamfer-* below. */
+  --radius-xs:  3px;
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+  --radius-pill: 999px;
+
+  /* ---- BORDERS ---- */
+  --border-hair:   1px solid var(--border-subtle);
+  --border-1:      1px solid var(--border-strong);
+  --border-2:      2px solid var(--border-strong);
+  --border-accent-1: 1px solid var(--ember-500);
+
+  /* ---- CHAMFER (machined-corner clip-path) ----
+     Apply: clip-path: var(--chamfer-md); for cut top-right & bottom-left. */
+  --chamfer-sm: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); /* @kind other */
+  --chamfer-md: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); /* @kind other */
+  --chamfer-lg: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px)); /* @kind other */
+
+  /* ---- ELEVATION (clean, cool shadows) ---- */
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-2: 0 4px 14px rgba(0,0,0,0.45);
+  --shadow-3: 0 14px 40px rgba(0,0,0,0.55);
+  --shadow-inset: inset 0 1px 0 rgba(255,255,255,0.04);
+
+  /* ---- SIGNATURE GLOWS (sparing — focus, active, hero) ---- */
+  --glow-ember: 0 0 0 1px rgba(255,107,61,0.5), 0 0 22px rgba(255,107,61,0.28);
+  --glow-cyan:  0 0 0 1px rgba(43,214,222,0.5), 0 0 22px rgba(43,214,222,0.28);
+  --glow-ember-soft: 0 0 28px rgba(255,107,61,0.22);
+  --glow-cyan-soft:  0 0 28px rgba(43,214,222,0.22);
+
+  /* ---- FOCUS RING ---- */
+  --ring: 0 0 0 2px var(--ink-900), 0 0 0 4px var(--focus-ring);
+
+  /* ---- MOTION ---- */
+  --ease-out:   cubic-bezier(0.16, 0.84, 0.36, 1); /* @kind other */
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1); /* @kind other */
+  --dur-fast:   120ms; /* @kind other */
+  --dur-base:   200ms; /* @kind other */
+  --dur-slow:   320ms; /* @kind other */
+
+  /* ---- BLUEPRINT GRID BACKGROUND ----
+     background-image: var(--grid-lines); background-size: 32px 32px; */
+  --grid-lines: linear-gradient(rgba(43,214,222,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(43,214,222,0.05) 1px, transparent 1px); /* @kind other */
+  --grid-size: 32px 32px; /* @kind other */
+}

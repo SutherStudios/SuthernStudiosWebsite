@@ -1,0 +1,150 @@
+---
+/**
+ * Card — the workhorse surface panel.
+ *
+ * `accent` adds a glowing top bar. `interactive` lifts the card 3px on hover
+ * for clickable tiles (pass `href` to make the whole card a link).
+ */
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  accent?: 'none' | 'ember' | 'cyan';
+  interactive?: boolean;
+  chamfer?: boolean;
+  href?: string;
+  class?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  accent = 'none',
+  interactive = false,
+  chamfer = false,
+  href,
+  class: className,
+} = Astro.props;
+
+const isLink = Boolean(href);
+const classes = [
+  'card',
+  accent !== 'none' && `card--accent-${accent}`,
+  (interactive || isLink) && 'card--interactive',
+  chamfer && 'card--chamfer',
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+
+const Tag = isLink ? 'a' : 'div';
+---
+
+<Tag class={classes} href={href}>
+  {accent !== 'none' && <span class="card__accent" aria-hidden="true" />}
+  {eyebrow && <div class="card__eyebrow">{eyebrow}</div>}
+  {title && <h3 class="card__title">{title}</h3>}
+  <div class="card__body"><slot /></div>
+  {
+    Astro.slots.has('footer') && (
+      <div class="card__footer">
+        <slot name="footer" />
+      </div>
+    )
+  }
+</Tag>
+
+<style>
+  .card {
+    position: relative;
+    display: block;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    padding: var(--pad-card-lg);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out);
+  }
+
+  .card--chamfer {
+    border-radius: 0;
+    clip-path: var(--chamfer-md);
+  }
+
+  .card--interactive {
+    cursor: pointer;
+  }
+
+  .card--interactive:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-3);
+    border-color: var(--border-strong);
+  }
+
+  /* ---- ACCENT BAR ---- */
+
+  .card__accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    transition: box-shadow var(--dur-base) var(--ease-out);
+  }
+
+  .card--accent-ember .card__accent {
+    background: var(--ember-500);
+  }
+
+  .card--accent-cyan .card__accent {
+    background: var(--cyan-500);
+  }
+
+  .card--accent-ember:hover .card__accent {
+    box-shadow: 0 0 14px rgba(255, 107, 61, 0.5);
+  }
+
+  .card--accent-cyan:hover .card__accent {
+    box-shadow: 0 0 14px rgba(43, 214, 222, 0.5);
+  }
+
+  /* ---- CONTENT ---- */
+
+  .card__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 10px;
+  }
+
+  .card__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-4);
+    letter-spacing: -0.01em;
+  }
+
+  .card__body {
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .card__body :global(p:not(:last-child)) {
+    margin-bottom: var(--space-4);
+  }
+
+  .card__footer {
+    margin-top: var(--space-6);
+  }
+</style>

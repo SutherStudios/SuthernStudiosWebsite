@@ -1,0 +1,182 @@
+---
+/**
+ * Newsletter — the "get the devlog" capture block that closes most pages.
+ *
+ * The form is fully built but posts nowhere until FORMS.newsletterEndpoint is
+ * set in src/config.ts. While unwired it renders in an honest disabled state
+ * rather than silently swallowing addresses — fill in the endpoint and it
+ * enables itself with no other change.
+ */
+
+import { FORMS } from '../config';
+import Button from './Button.astro';
+import Eyebrow from './Eyebrow.astro';
+
+const endpoint = FORMS.newsletterEndpoint;
+const wired = endpoint.length > 0;
+---
+
+<section class="section--tight">
+  <div class="container">
+    <div class="newsletter">
+      <span class="newsletter__glow" aria-hidden="true"></span>
+
+      <div class="newsletter__copy">
+        <Eyebrow>// Transmission</Eyebrow>
+        <h2 class="newsletter__title">Get the devlog</h2>
+        <p class="newsletter__body">
+          Build logs and launch news, straight to your inbox. No spam — just the work.
+        </p>
+      </div>
+
+      <form
+        class="newsletter__form"
+        action={wired ? endpoint : undefined}
+        method={wired ? 'POST' : undefined}
+      >
+        <div class="newsletter__field">
+          <label class="newsletter__label" for="newsletter-email">Email</label>
+          <input
+            class="newsletter__input"
+            type="email"
+            id="newsletter-email"
+            name="email"
+            placeholder="you@email.com"
+            autocomplete="email"
+            required
+            disabled={!wired}
+          />
+        </div>
+        <Button type="submit" disabled={!wired}>Subscribe</Button>
+      </form>
+
+      {
+        !wired && (
+          <p class="newsletter__note">
+            &gt; Signup opens soon — until then, follow along on the devlog.
+          </p>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .newsletter {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(120deg, var(--ink-700), var(--ink-800));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-9);
+    display: flex;
+    gap: var(--space-9);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .newsletter__glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(70% 120% at 100% 0%, var(--ember-tint), transparent 60%);
+    pointer-events: none;
+  }
+
+  .newsletter__copy {
+    flex: 1 1 300px;
+    position: relative;
+  }
+
+  .newsletter__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--text-xl);
+    color: var(--text-primary);
+    margin: 10px 0 var(--space-3);
+  }
+
+  .newsletter__body {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin: 0;
+    max-width: 380px;
+  }
+
+  .newsletter__form {
+    flex: 1 1 300px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    position: relative;
+  }
+
+  .newsletter__field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .newsletter__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .newsletter__input {
+    background: var(--ink-900);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    padding: 11px var(--space-4);
+    width: 100%;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out);
+  }
+
+  .newsletter__input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .newsletter__input:hover:not(:disabled) {
+    border-color: var(--border-strong);
+  }
+
+  .newsletter__input:focus {
+    outline: none;
+    border-color: var(--cyan-600);
+    box-shadow: var(--glow-cyan-soft);
+  }
+
+  .newsletter__input:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .newsletter__note {
+    position: relative;
+    flex-basis: 100%;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 640px) {
+    .newsletter {
+      padding: var(--space-7);
+      gap: var(--space-7);
+    }
+
+    .newsletter__form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>

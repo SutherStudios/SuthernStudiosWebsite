@@ -1,0 +1,59 @@
+/* ============================================================
+   SUTHERN STUDIOS — TYPOGRAPHY
+   Display: Chakra Petch (squared retro-tech)
+   Body/UI: IBM Plex Sans
+   Mono:    IBM Plex Mono (eyebrows, data, terminal nods)
+   ============================================================ */
+
+:root {
+  /* ---- FAMILIES ---- */
+  --font-display: 'Chakra Petch', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-body:    'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* ---- WEIGHTS ---- */
+  --fw-regular: 400; /* @kind font */
+  --fw-medium:  500; /* @kind font */
+  --fw-semibold:600; /* @kind font */
+  --fw-bold:    700; /* @kind font */
+
+  /* ---- SIZE SCALE (px) ---- */
+  --text-2xs:  11px;
+  --text-xs:   12px;
+  --text-sm:   14px;
+  --text-base: 16px;
+  --text-md:   18px;
+  --text-lg:   20px;
+  --text-xl:   24px;
+  --text-2xl:  30px;
+  --text-3xl:  38px;
+  --text-4xl:  48px;
+  --text-5xl:  64px;
+  --text-6xl:  82px;
+
+  /* ---- LINE HEIGHTS ---- */
+  --lh-tight:   1.05; /* @kind other */
+  --lh-snug:    1.2;  /* @kind other */
+  --lh-normal:  1.5;  /* @kind other */
+  --lh-relaxed: 1.7;  /* @kind other */
+
+  /* ---- LETTER SPACING ---- */
+  --tracking-tight:  -0.02em; /* @kind other */
+  --tracking-normal: 0;       /* @kind other */
+  --tracking-wide:   0.04em;  /* @kind other */
+  --tracking-label:  0.16em;  /* @kind other */
+
+  /* ---- SEMANTIC ROLES ---- */
+  --display-family: var(--font-display);
+  --display-weight: var(--fw-bold);
+  --display-tracking: var(--tracking-tight);
+
+  --eyebrow-family: var(--font-mono);
+  --eyebrow-size: var(--text-xs);
+  --eyebrow-tracking: var(--tracking-label);
+  --eyebrow-transform: uppercase; /* @kind other */
+
+  --body-family: var(--font-body);
+  --body-size: var(--text-base);
+  --body-line: var(--lh-relaxed);
+}

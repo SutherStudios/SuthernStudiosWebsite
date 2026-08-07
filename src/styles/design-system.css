@@ -1,0 +1,18 @@
+/* ============================================================
+   SUTHERN STUDIOS — DESIGN SYSTEM ENTRY
+   Mirrors `styles.css` from the Suthern Studios Design System.
+   Token files in ./tokens/ are copied verbatim from the system —
+   treat them as vendored. Site-specific styling lives in global.css.
+
+   NOTE ON FONTS: tokens/fonts.css pulls the type program in via a CSS
+   @import, which blocks rendering until the CSS-in-CSS request resolves.
+   For production we instead load the same three families with a
+   preconnected <link> in BaseLayout.astro, so fonts.css is deliberately
+   NOT imported here. The token file is kept for design-system parity.
+   ============================================================ */
+
+@import url('./tokens/colors.css');
+@import url('./tokens/typography.css');
+@import url('./tokens/spacing.css');
+@import url('./tokens/effects.css');
+@import url('./tokens/patterns.css');

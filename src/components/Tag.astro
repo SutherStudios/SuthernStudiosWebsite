@@ -1,0 +1,53 @@
+---
+/** Tag — genre / metadata chip. */
+
+interface Props {
+  active?: boolean;
+  href?: string;
+  class?: string;
+}
+
+const { active = false, href, class: className } = Astro.props;
+
+const classes = ['tag', active && 'tag--active', href && 'tag--link', className]
+  .filter(Boolean)
+  .join(' ');
+
+const Tag = href ? 'a' : 'span';
+---
+
+<Tag class={classes} href={href}><slot /></Tag>
+
+<style>
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    background: var(--ink-700);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    line-height: 1;
+    text-decoration: none;
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      background var(--dur-fast) var(--ease-out);
+  }
+
+  .tag--active {
+    color: var(--cyan-400);
+    background: var(--cyan-tint);
+    border-color: var(--cyan-600);
+  }
+
+  .tag--link:hover {
+    color: var(--cyan-400);
+    border-color: var(--cyan-600);
+  }
+</style>

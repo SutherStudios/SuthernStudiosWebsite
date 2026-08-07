@@ -1,0 +1,401 @@
+---
+/**
+ * Contact.
+ *
+ * The form is fully built but posts nowhere until FORMS.contactEndpoint is set
+ * in src/config.ts. While unwired it renders disabled with a pointer to the
+ * email address, so nobody types a message into a void. Fill in the endpoint
+ * and it enables itself — see README § Wiring up the forms.
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Icon from '../components/Icon.astro';
+import { CONTACT, FORMS, SOCIALS } from '../config';
+
+const endpoint = FORMS.contactEndpoint;
+const wired = endpoint.length > 0;
+
+const subjects = [
+  'General inquiry',
+  'Game feedback',
+  'Collaboration',
+  'Press / Media',
+  'Bug report',
+];
+
+const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
+---
+
+<BaseLayout
+  title="Contact"
+  description="Have a question, want to collaborate, or just want to say hello? Get in touch with Suthern Studios."
+>
+  <div class="container page">
+    <Eyebrow>// Comms</Eyebrow>
+    <h1 class="page__title">Get in touch</h1>
+    <p class="page__lede">
+      Have a question, want to collaborate, or just want to say hello? Send a transmission.
+    </p>
+
+    <div class="grid">
+      <!-- ================= FORM ================= -->
+      <div class="panel">
+        <form
+          class="form"
+          action={wired ? endpoint : undefined}
+          method={wired ? 'POST' : undefined}
+        >
+          {
+            !wired && (
+              <p class="form__notice">
+                <Icon name="mail" size={16} />
+                <span>
+                  This form isn't connected yet — reach us directly at{' '}
+                  <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>.
+                </span>
+              </p>
+            )
+          }
+
+          <div class="form__row">
+            <div class="field">
+              <label class="field__label" for="name">Name</label>
+              <input
+                class="field__input"
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Your name"
+                autocomplete="name"
+                required
+                disabled={!wired}
+              />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="email">Email</label>
+              <input
+                class="field__input"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@email.com"
+                autocomplete="email"
+                required
+                disabled={!wired}
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="subject">Subject</label>
+            <div class="field__select-wrap">
+              <select class="field__input field__select" id="subject" name="subject" disabled={!wired}>
+                {subjects.map((subject) => <option value={subject}>{subject}</option>)}
+              </select>
+              <span class="field__chevron" aria-hidden="true">▾</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="message">Message</label>
+            <textarea
+              class="field__input field__textarea"
+              id="message"
+              name="message"
+              rows="5"
+              placeholder="Type your message…"
+              required
+              disabled={!wired}></textarea>
+          </div>
+
+          <div>
+            <Button type="submit" size="lg" chamfer leadingIcon="send" disabled={!wired}>
+              Transmit
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ================= DIRECT LINKS ================= -->
+      <aside>
+        <div class="aside__label">Direct links</div>
+
+        <div class="links">
+          {
+            socials.map((social) => (
+              <a
+                href={social.href}
+                class="link"
+                target={social.href.startsWith('http') ? '_blank' : undefined}
+                rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                <span class="link__icon"><Icon name={social.icon} size={18} /></span>
+                <span>
+                  <span class="link__label">{social.label}</span>
+                  <span class="link__value">{social.value}</span>
+                </span>
+              </a>
+            ))
+          }
+        </div>
+
+        <div class="note">
+          <p>
+            <strong>Response time:</strong> solo operation — expect a reply {CONTACT.responseTime}.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: var(--space-11) var(--space-12);
+  }
+
+  .page__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(36px, 6vw, 48px);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+    margin: var(--space-4) 0 var(--space-3);
+  }
+
+  .page__lede {
+    font-size: 17px;
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-10);
+    max-width: 560px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+
+  /* ---- FORM PANEL ---- */
+
+  .panel {
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-2);
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .form__notice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin: 0;
+    padding: var(--space-5);
+    background: var(--ink-800);
+    border-left: 3px solid var(--cyan-500);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .form__notice :global(svg) {
+    color: var(--cyan-400);
+    margin-top: 3px;
+  }
+
+  .form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+
+  /* ---- FIELDS ---- */
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .field__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .field__input {
+    background: var(--ink-900);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    padding: 11px var(--space-4);
+    width: 100%;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out);
+  }
+
+  .field__input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .field__input:hover:not(:disabled) {
+    border-color: var(--border-strong);
+  }
+
+  .field__input:focus {
+    outline: none;
+    border-color: var(--cyan-600);
+    box-shadow: var(--glow-cyan-soft);
+  }
+
+  .field__input:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .field__textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+  }
+
+  .field__select-wrap {
+    position: relative;
+  }
+
+  .field__select {
+    appearance: none;
+    padding-right: var(--space-9);
+    cursor: pointer;
+  }
+
+  .field__select:disabled {
+    cursor: not-allowed;
+  }
+
+  .field__chevron {
+    position: absolute;
+    right: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+  }
+
+  /* ---- ASIDE ---- */
+
+  .aside__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-5);
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    text-decoration: none;
+    background: var(--ink-800);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+
+  .link:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+
+  .link__icon {
+    color: var(--cyan-400);
+    display: inline-flex;
+  }
+
+  .link__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .link__value {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--text-body);
+    margin-top: 2px;
+  }
+
+  .note {
+    margin-top: var(--space-6);
+    padding: var(--space-5);
+    border-left: 3px solid var(--ember-500);
+    background: var(--ink-800);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+
+  .note p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .note strong {
+    color: var(--text-body);
+  }
+
+  /* ---- RESPONSIVE ---- */
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .page {
+      padding-top: var(--space-9);
+    }
+
+    .panel {
+      padding: var(--space-6);
+    }
+
+    .form__row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

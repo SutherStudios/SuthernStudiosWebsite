@@ -1,0 +1,39 @@
+/* ============================================================
+   SUTHERN STUDIOS — SPACING & LAYOUT
+   4px base grid.
+   ============================================================ */
+
+:root {
+  --space-0:   0;
+  --space-1:   2px;
+  --space-2:   4px;
+  --space-3:   8px;
+  --space-4:   12px;
+  --space-5:   16px;
+  --space-6:   20px;
+  --space-7:   24px;
+  --space-8:   32px;
+  --space-9:   40px;
+  --space-10:  48px;
+  --space-11:  64px;
+  --space-12:  80px;
+  --space-13:  96px;
+  --space-14:  128px;
+
+  /* ---- CONTAINERS ---- */
+  --container-sm:  720px;
+  --container-md:  960px;
+  --container-lg:  1180px;
+  --container-xl:  1320px;
+
+  --gutter:        24px;
+  --section-pad-y: 96px;
+
+  /* ---- SEMANTIC SPACING ---- */
+  --pad-card:    24px;
+  --pad-card-lg: 32px;
+  --pad-inline:  16px;
+  --gap-tight:   8px;
+  --gap-base:    16px;
+  --gap-loose:   32px;
+}

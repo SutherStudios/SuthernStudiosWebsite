@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Icon from '../components/Icon.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Stat from '../components/Stat.astro';
+import { SITE } from '../config';
+
+const philosophy = [
+  {
+    icon: 'layers',
+    title: 'Systems over spectacle',
+    body: 'A game is only as good as the way its pieces talk to each other. Ten deeply connected systems beat a hundred shallow ones.',
+  },
+  {
+    icon: 'grid-3x3',
+    title: 'Pixel art is a choice',
+    body: '32×32 tiles through Unity URP. Every sprite is deliberate — clarity and intention, not a budget compromise.',
+  },
+  {
+    icon: 'radio',
+    title: 'Build in public',
+    body: 'No NDAs, no smoke and mirrors. When something breaks, you hear about it. When it clicks, you see it first.',
+  },
+  {
+    icon: 'unlock',
+    title: 'Moddable by default',
+    body: 'Games belong to their communities. Mod-friendly architecture and full modding rights from day one.',
+  },
+];
+---
+
+<BaseLayout
+  title="About"
+  description="Suthern Studios is a solo game studio building deep, systems-driven games with handcrafted pixel art. One developer, every system."
+>
+  <div class="container container--md page">
+    <Eyebrow>// The studio</Eyebrow>
+
+    <h1 class="page__title">One developer.<br />Every system.</h1>
+
+    <p class="page__lede">
+      Suthern Studios is a solo game studio building deep, systems-driven games with handcrafted
+      pixel art. All code, all design, all art direction — from world generation to combat AI.
+    </p>
+
+    <div class="stats">
+      <Stat value={String(SITE.founded)} label="Founded" accent="gold" />
+      <Stat value="01" label="Games in dev" accent="ember" />
+      <Stat value="C#" label="Built in" accent="cyan" />
+      <Stat value="Unity" label="Engine" accent="ember" />
+    </div>
+
+    <Eyebrow>// Philosophy</Eyebrow>
+    <h2 class="section__title">How we build</h2>
+
+    <div class="philosophy">
+      {
+        philosophy.map((item) => (
+          <div class="pillar">
+            <span class="pillar__icon"><Icon name={item.icon} size={20} /></span>
+            <h3 class="pillar__title">{item.title}</h3>
+            <p class="pillar__body">{item.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: var(--space-11);
+  }
+
+  .page__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(36px, 6vw, 48px);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin: var(--space-4) 0 var(--space-6);
+  }
+
+  .page__lede {
+    font-size: 19px;
+    line-height: var(--lh-relaxed);
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-7);
+    margin-block: var(--space-10);
+    padding-block: var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .section__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--text-2xl);
+    color: var(--text-primary);
+    margin: var(--space-4) 0 var(--space-7);
+  }
+
+  .philosophy {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-5);
+  }
+
+  .pillar {
+    padding: var(--pad-card);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .pillar__icon {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    background: var(--ember-tint);
+    color: var(--ember-400);
+    margin-bottom: var(--space-5);
+  }
+
+  .pillar__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--text-md);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-3);
+  }
+
+  .pillar__body {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  @media (max-width: 720px) {
+    .page {
+      padding-top: var(--space-9);
+    }
+  }
+</style>

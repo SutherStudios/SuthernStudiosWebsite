@@ -1,0 +1,305 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Badge from '../components/Badge.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Icon from '../components/Icon.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Stat from '../components/Stat.astro';
+import { AFTERSHOCK } from '../config';
+import { formatDotted } from '../utils/date';
+
+const posts = (await getCollection('devlog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 2);
+---
+
+<BaseLayout>
+  <!-- ================= HERO ================= -->
+  <section class="hero sunset-wash">
+    <span class="grid-plane" aria-hidden="true"></span>
+    <span class="horizon-line hero__horizon" aria-hidden="true"></span>
+
+    <div class="hero__inner fade-up">
+      <Badge tone="ember" variant="soft" dot>Now building — {AFTERSHOCK.title}</Badge>
+
+      <h1 class="hero__title">
+        Worlds with soul,<br />
+        <span class="grad-text">made by one.</span>
+      </h1>
+
+      <p class="hero__lede">
+        Suthern Studios is a solo game studio building deep, systems-driven worlds where every
+        mechanic connects to the next.
+      </p>
+
+      <div class="hero__actions">
+        <Button size="lg" variant="primary" chamfer href="/games/" leadingIcon="gamepad-2">
+          Explore the games
+        </Button>
+        <Button size="lg" variant="secondary" href="/about/" trailingIcon="arrow-right">
+          About the studio
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STATS ================= -->
+  <section class="container">
+    <div class="stats">
+      <Stat value="01" label="Game in development" accent="ember" />
+      <Stat value="16" label="Procedural biomes" accent="cyan" />
+      <Stat value="100%" label="Built solo" accent="gold" />
+      <Stat value="∞" label="Modding rights" accent="cyan" />
+    </div>
+  </section>
+
+  <!-- ================= WHAT WE BUILD ================= -->
+  <section class="section container">
+    <Eyebrow>// The catalog</Eyebrow>
+    <h2 class="section__title">What we build</h2>
+
+    <div class="cards">
+      <Card eyebrow="// Flagship" title={AFTERSHOCK.title} accent="ember" href="/games/">
+        A post-apocalyptic colony sim. Procedural worlds, deep survival systems, tactical combat —
+        pixel art with purpose.
+        <Fragment slot="footer">
+          <span class="card-cta">View game <Icon name="arrow-right" size={13} /></span>
+        </Fragment>
+      </Card>
+
+      <Card eyebrow="// Method" title="Systems first" accent="cyan">
+        Ten deeply connected systems beat a hundred shallow ones. What you grow feeds who you keep
+        alive.
+      </Card>
+
+      <Card eyebrow="// Promise" title="Built in public">
+        No NDAs, no smoke. When something breaks, you hear about it. When it clicks, you see it
+        first.
+      </Card>
+    </div>
+  </section>
+
+  <!-- ================= LATEST DEVLOG ================= -->
+  {
+    posts.length > 0 && (
+      <section class="section--tight container">
+        <div class="section__head">
+          <div>
+            <Eyebrow>// Build logs</Eyebrow>
+            <h2 class="section__title">Latest from the devlog</h2>
+          </div>
+          <Button variant="ghost" size="sm" href="/devlog/" trailingIcon="arrow-right">
+            All entries
+          </Button>
+        </div>
+
+        <div class="posts">
+          {posts.map((post) => (
+            <a href={`/devlog/${post.id}/`} class="post">
+              <span class:list={['post__edge', `post__edge--${post.data.accent}`]} aria-hidden="true" />
+              <div class="post__meta">
+                <span class="post__date">{formatDotted(post.data.date)}</span>
+                {post.data.build && <span class="post__build">build {post.data.build}</span>}
+              </div>
+              <h3 class="post__title">{post.data.title}</h3>
+              <p class="post__summary">{post.data.summary}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  /* ---- HERO ---- */
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 120px var(--gutter) 100px;
+  }
+
+  .hero__horizon {
+    bottom: 30%;
+  }
+
+  .hero__inner {
+    position: relative;
+    max-width: 880px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(40px, 7vw, 82px);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+    margin: var(--space-7) 0 0;
+  }
+
+  .hero__lede {
+    font-size: var(--text-lg);
+    line-height: 1.6;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: var(--space-7) auto 0;
+  }
+
+  .hero__actions {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+
+  /* ---- STATS ---- */
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-7);
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    padding-block: 36px;
+  }
+
+  /* ---- SECTIONS ---- */
+
+  .section__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: 34px;
+    color: var(--text-primary);
+    margin: var(--space-4) 0 var(--space-8);
+    letter-spacing: -0.01em;
+  }
+
+  .section__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-8);
+  }
+
+  .section__head .section__title {
+    margin-bottom: 0;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ember-400);
+  }
+
+  /* ---- POSTS ---- */
+
+  .posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .post {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7) var(--space-8);
+    text-decoration: none;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out);
+  }
+
+  .post:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-3);
+    border-color: var(--border-strong);
+  }
+
+  .post__edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 3px;
+  }
+
+  .post__edge--ember {
+    background: var(--ember-500);
+  }
+
+  .post__edge--cyan {
+    background: var(--cyan-500);
+  }
+
+  .post__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.06em;
+    margin-bottom: var(--space-4);
+  }
+
+  .post__date {
+    color: var(--text-muted);
+  }
+
+  .post__build {
+    color: var(--accent-2);
+  }
+
+  .post__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--text-md);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-3);
+    letter-spacing: -0.01em;
+  }
+
+  .post__summary {
+    font-size: var(--text-sm);
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  @media (max-width: 720px) {
+    .hero {
+      padding: 80px var(--gutter) 64px;
+    }
+
+    .section__title {
+      font-size: var(--text-2xl);
+    }
+  }
+</style>

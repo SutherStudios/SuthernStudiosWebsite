@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+---
+
+<BaseLayout title="404 — Signal lost" noindex>
+  <section class="notfound sunset-wash">
+    <span class="grid-plane" aria-hidden="true"></span>
+    <span class="horizon-line notfound__horizon" aria-hidden="true"></span>
+
+    <div class="notfound__inner">
+      <Eyebrow>// Error 404</Eyebrow>
+      <p class="notfound__code">404</p>
+      <h1 class="notfound__title">Signal lost.</h1>
+      <p class="notfound__body">
+        That page isn't on the map. It may have moved, or it never existed in this build.
+      </p>
+      <div class="notfound__actions">
+        <Button href="/" variant="primary" chamfer leadingIcon="arrow-left">Back to base</Button>
+        <Button href="/devlog/" variant="secondary" trailingIcon="arrow-right">Read the devlog</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    padding: var(--space-12) var(--gutter);
+    text-align: center;
+  }
+
+  .notfound__horizon {
+    bottom: 34%;
+  }
+
+  .notfound__inner {
+    position: relative;
+    max-width: 560px;
+  }
+
+  .notfound__code {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(72px, 16vw, 140px);
+    line-height: 1;
+    letter-spacing: var(--tracking-tight);
+    background: var(--grad-sunset);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: var(--space-5) 0 0;
+  }
+
+  .notfound__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--text-2xl);
+    color: var(--text-primary);
+    margin: var(--space-4) 0 var(--space-4);
+  }
+
+  .notfound__body {
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    margin: 0 auto var(--space-8);
+    max-width: 420px;
+  }
+
+  .notfound__actions {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+</style>

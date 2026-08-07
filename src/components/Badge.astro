@@ -1,0 +1,86 @@
+---
+/** Badge — compact status pill. Soft (tinted), solid, or outline. */
+
+interface Props {
+  tone?: 'neutral' | 'ember' | 'cyan' | 'success' | 'warning' | 'danger';
+  variant?: 'soft' | 'solid' | 'outline';
+  dot?: boolean;
+  class?: string;
+}
+
+const { tone = 'neutral', variant = 'soft', dot = false, class: className } = Astro.props;
+
+const classes = ['badge', `badge--${tone}`, `badge--${variant}`, className].filter(Boolean).join(' ');
+---
+
+<span class={classes}>
+  {dot && <span class="badge__dot" aria-hidden="true" />}
+  <slot />
+</span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    line-height: 1;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+
+  .badge__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* tone → base colour, exposed so every variant can share it */
+  .badge--neutral {
+    --badge-base: var(--ink-200);
+    --badge-tint: var(--ink-600);
+  }
+  .badge--ember {
+    --badge-base: var(--ember-500);
+    --badge-tint: var(--ember-tint);
+  }
+  .badge--cyan {
+    --badge-base: var(--cyan-500);
+    --badge-tint: var(--cyan-tint);
+  }
+  .badge--success {
+    --badge-base: var(--success-500);
+    --badge-tint: var(--success-tint);
+  }
+  .badge--warning {
+    --badge-base: var(--warning-500);
+    --badge-tint: var(--warning-tint);
+  }
+  .badge--danger {
+    --badge-base: var(--danger-500);
+    --badge-tint: var(--danger-tint);
+  }
+
+  .badge--soft {
+    background: var(--badge-tint);
+    color: var(--badge-base);
+  }
+
+  .badge--solid {
+    background: var(--badge-base);
+    color: var(--ink-1000);
+  }
+
+  .badge--outline {
+    background: transparent;
+    color: var(--badge-base);
+    border-color: var(--badge-base);
+  }
+</style>

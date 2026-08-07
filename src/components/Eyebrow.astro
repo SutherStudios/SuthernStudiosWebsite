@@ -1,0 +1,15 @@
+---
+/**
+ * Eyebrow — UPPERCASE mono kicker above a headline.
+ * Conventionally prefixed `//` or `>` per the brand voice.
+ */
+
+interface Props {
+  class?: string;
+  as?: 'div' | 'p' | 'span';
+}
+
+const { class: className, as: Tag = 'div' }: Props = Astro.props;
+---
+
+<Tag class:list={['eyebrow', className]}><slot /></Tag>

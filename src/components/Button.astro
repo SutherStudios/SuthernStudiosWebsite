@@ -1,0 +1,206 @@
+---
+/**
+ * Button — primary action control.
+ *
+ * Ports the design system's Button (components/actions/Button.jsx) to a static
+ * component; hover/press states move from React state into CSS.
+ *
+ * `chamfer` swaps the radius for the machined cut-corner — reserve it for
+ * hero / marquee actions.
+ */
+
+import Icon from './Icon.astro';
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  chamfer?: boolean;
+  fullWidth?: boolean;
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  leadingIcon?: string;
+  trailingIcon?: string;
+  external?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  chamfer = false,
+  fullWidth = false,
+  href,
+  type = 'button',
+  disabled = false,
+  leadingIcon,
+  trailingIcon,
+  external = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const iconSize = size === 'sm' ? 14 : size === 'md' ? 16 : 18;
+
+const classes = [
+  'btn',
+  `btn--${variant}`,
+  `btn--${size}`,
+  chamfer && 'btn--chamfer',
+  fullWidth && 'btn--full',
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+
+const Tag = href ? 'a' : 'button';
+const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+<Tag
+  class={classes}
+  href={href}
+  type={href ? undefined : type}
+  disabled={href ? undefined : disabled}
+  aria-disabled={href && disabled ? 'true' : undefined}
+  {...externalAttrs}
+  {...rest}
+>
+  {leadingIcon && <Icon name={leadingIcon} size={iconSize} />}
+  <span><slot /></span>
+  {trailingIcon && <Icon name={trailingIcon} size={iconSize} />}
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .btn--full {
+    display: flex;
+    width: 100%;
+  }
+
+  /* ---- SIZES ---- */
+
+  .btn--sm {
+    font-size: var(--text-xs);
+    padding: 7px 14px;
+    gap: 6px;
+  }
+
+  .btn--md {
+    font-size: 13px;
+    padding: 11px 20px;
+    gap: 8px;
+  }
+
+  .btn--lg {
+    font-size: var(--text-sm);
+    padding: 15px 28px;
+    gap: 10px;
+  }
+
+  /* ---- VARIANTS ---- */
+
+  .btn--primary {
+    background: var(--ember-500);
+    color: var(--ink-1000);
+  }
+
+  .btn--primary:hover {
+    background: var(--ember-400);
+    box-shadow: 0 6px 18px rgba(255, 107, 61, 0.3);
+  }
+
+  .btn--primary:active {
+    background: var(--ember-600);
+  }
+
+  .btn--secondary {
+    background: transparent;
+    color: var(--cyan-400);
+    border-color: var(--cyan-600);
+  }
+
+  .btn--secondary:hover {
+    background: var(--cyan-tint);
+    color: var(--cyan-400);
+  }
+
+  .btn--secondary:active {
+    background: rgba(43, 214, 222, 0.2);
+  }
+
+  .btn--ghost {
+    background: transparent;
+    color: var(--text-body);
+  }
+
+  .btn--ghost:hover {
+    background: var(--ink-600);
+    color: var(--text-primary);
+  }
+
+  .btn--ghost:active {
+    background: var(--ink-500);
+  }
+
+  .btn--danger {
+    background: var(--danger-500);
+    color: var(--ink-1000);
+  }
+
+  .btn--danger:hover {
+    background: #ff6a60;
+    box-shadow: 0 6px 18px rgba(255, 82, 71, 0.28);
+  }
+
+  .btn--danger:active {
+    background: #e63e34;
+  }
+
+  /* Press nudges down 1px and settles — no bounce, no scale. */
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  /* ---- CHAMFER (machined cut-corner) ---- */
+
+  .btn--chamfer {
+    border-radius: 0;
+    clip-path: var(--chamfer-sm);
+  }
+
+  /* ---- DISABLED ---- */
+
+  .btn:disabled,
+  .btn[aria-disabled='true'] {
+    background: var(--ink-600);
+    border-color: var(--ink-500);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.55;
+    box-shadow: none;
+    transform: none;
+    pointer-events: none;
+  }
+</style>

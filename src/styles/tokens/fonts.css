@@ -1,0 +1,10 @@
+/* ============================================================
+   SUTHERN STUDIOS — WEBFONTS
+   Retro-futurism type program. Loaded from Google Fonts CDN.
+   Self-host the .woff2 files for production if you prefer.
+   - Chakra Petch  → display / headings / wordmark (squared retro-tech)
+   - IBM Plex Sans → body & UI (clean, professional)
+   - IBM Plex Mono → labels, data, eyebrows, terminal nods
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
