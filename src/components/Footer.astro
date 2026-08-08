@@ -10,7 +10,7 @@ const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
 <footer class="footer">
   <div class="container footer__inner">
     <div class="footer__brand">
-      <img src="/assets/logo-mark-512.png" alt="" width="34" height="34" class="footer__mark" />
+      <img src="/assets/logo-mark.png" alt="" width="36" height="45" class="footer__mark" />
       <div>
         <div class="footer__name">{SITE.name}</div>
         <div class="footer__meta">© {year} — Built solo, in the open.</div>
@@ -62,9 +62,8 @@ const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
   }
 
   .footer__mark {
-    width: 34px;
-    height: 34px;
-    border-radius: var(--space-3);
+    width: auto;
+    height: 45px;
     image-rendering: pixelated;
   }
 

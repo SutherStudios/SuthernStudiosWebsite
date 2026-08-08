@@ -22,7 +22,7 @@ const wishlistHref = AFTERSHOCK.steamUrl || '/games/';
 <header class="nav">
   <div class="nav__inner">
     <a href="/" class="nav__brand" aria-label={`${'Suthern Studios'} — home`}>
-      <img src="/assets/logo-mark-512.png" alt="" width="30" height="30" class="nav__mark" />
+      <img src="/assets/logo-mark.png" alt="" width="32" height="40" class="nav__mark" />
       <span class="nav__wordmark">Suthern Studios</span>
     </a>
 
@@ -97,10 +97,12 @@ const wishlistHref = AFTERSHOCK.steamUrl || '/games/';
     flex-shrink: 0;
   }
 
+  /* logo-mark.png is trimmed tight to the glyph (native 20×25 art grid), so
+     no border-radius here — rounding would clip the mark rather than the
+     empty padding the untrimmed asset used to carry. */
   .nav__mark {
-    width: 30px;
-    height: 30px;
-    border-radius: 7px;
+    width: auto;
+    height: 40px;
     image-rendering: pixelated;
   }
 
