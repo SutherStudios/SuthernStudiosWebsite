@@ -1,5 +1,5 @@
 ---
-import { SITE, NAV_LINKS, SOCIALS } from '../config';
+import { SITE, NAV_LINKS, FOOTER_LINKS, SOCIALS } from '../config';
 import Icon from './Icon.astro';
 
 const year = new Date().getFullYear();
@@ -18,7 +18,9 @@ const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
     </div>
 
     <nav class="footer__nav" aria-label="Footer">
-      {NAV_LINKS.map((link) => <a href={link.href} class="footer__link">{link.label}</a>)}
+      {[...NAV_LINKS, ...FOOTER_LINKS].map((link) => (
+        <a href={link.href} class="footer__link">{link.label}</a>
+      ))}
     </nav>
 
     <div class="footer__socials">

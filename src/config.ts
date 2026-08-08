@@ -28,6 +28,12 @@ export const NAV_LINKS = [
   { label: 'Contact', href: '/contact/' },
 ] as const;
 
+/**
+ * Footer-only links. Pages that matter to a minority of visitors but shouldn't
+ * crowd the header — press, and legal pages if they ever exist.
+ */
+export const FOOTER_LINKS = [{ label: 'Press', href: '/press/' }] as const;
+
 export const CONTACT = {
   email: 'hello@suthernstudios.com',
   /** Advertised on the contact page. Keep it honest — it's a solo studio. */
@@ -122,6 +128,76 @@ export const AFTERSHOCK = {
       title: 'Full ecology',
       body: 'Agriculture, cooking, wildlife, animal husbandry and hunting all interlock.',
     },
+  ],
+} as const;
+
+/**
+ * Press kit — everything a journalist or creator needs without emailing first.
+ *
+ * The descriptions are boilerplate meant to be pasted verbatim into an article
+ * or video description, which is why there are three lengths. Edit them here,
+ * not on the page.
+ */
+export const PRESS = {
+  descriptions: {
+    short: 'A post-apocalyptic colony simulation where every system feeds the next.',
+    medium:
+      'AfterShock is a post-apocalyptic colony simulation from solo studio Suthern Studios. Guide survivors through a procedurally generated wasteland — building shelter, managing needs, crafting tools, and defending against raids — in a world where terrain, climate, radiation and faction AI all interlock.',
+    long: 'AfterShock is a post-apocalyptic colony simulation built by a single developer at Suthern Studios. Players guide a group of survivors through a procedurally generated wasteland, building shelter, managing hunger, sleep, mood and health, crafting tools through full production chains, and defending against escalating raids.\n\nIts systems are designed to feed each other rather than sit side by side: world generation layers climate over terrain before scattering biomes and radiation zones, colonists form memories that change where they will and will not go, and combat resolves through cover and line-of-sight against faction AI. The game is rendered in handcrafted 3D voxel art — every cube textured on all six faces at 16×16 — and ships with full modding rights from day one.',
+  },
+
+  /**
+   * Downloadable brand assets. Dimensions are read off the actual files — if
+   * you replace one, update the label to match or the page starts lying.
+   */
+  assets: [
+    {
+      file: '/assets/logo-mark-original.png',
+      label: 'Logo mark — full size',
+      detail: 'PNG · 1024 × 1024 · transparent',
+    },
+    {
+      file: '/assets/logo-mark-512.png',
+      label: 'Logo mark — 512',
+      detail: 'PNG · 512 × 512 · transparent',
+    },
+    {
+      file: '/assets/logo-mark.png',
+      label: 'Logo mark — trimmed',
+      detail: 'PNG · 160 × 200 · cropped to the glyph',
+    },
+    {
+      file: '/assets/og-image.png',
+      label: 'Studio social card',
+      detail: 'PNG · 1200 × 630',
+    },
+  ],
+
+  /** The brand palette, for anyone laying out a thumbnail or article header. */
+  palette: [
+    ['Ember', '#FF6B3D', 'Primary accent'],
+    ['Cyan', '#2BD6DE', 'Secondary accent'],
+    ['Gold', '#FFB23E', 'Heritage amber'],
+    ['Ink', '#0A0C13', 'Canvas'],
+  ],
+
+  /**
+   * Screenshots and trailers, once they exist. Drop files in public/assets and
+   * add them here — the media section swaps its placeholder for a gallery on
+   * its own, the same way the game page handles keyArt.
+   */
+  screenshots: [] as { file: string; alt: string }[],
+  trailerUrl: '',
+
+  /**
+   * Say the quiet part out loud. Creators shouldn't have to email to find out
+   * whether they're allowed to monetise a video.
+   */
+  permissions: [
+    'You may record, stream and monetise video of AfterShock. No permission needed, no revenue share, forever.',
+    'You may use anything on this page — logos, art, copy — in coverage of the game or studio.',
+    'There is no embargo and no NDA. Everything published here is cleared for use today.',
+    'Please don’t stretch or recolour the logo, or imply the studio endorses an unrelated product.',
   ],
 } as const;
 

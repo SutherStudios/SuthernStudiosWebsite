@@ -1,0 +1,758 @@
+---
+/**
+ * Press kit.
+ *
+ * Written so a journalist or creator can cover the game without emailing
+ * first: fact sheets, paste-ready boilerplate, downloadable brand assets, and
+ * an explicit monetisation permission.
+ *
+ * The media section is honest about having no screenshots yet rather than
+ * padding itself out — add entries to PRESS.screenshots and it becomes a
+ * gallery on its own, the same way the game page handles keyArt.
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Icon from '../components/Icon.astro';
+import Tag from '../components/Tag.astro';
+import { AFTERSHOCK, CONTACT, PRESS, SITE, SOCIALS } from '../config';
+
+const hasShots = PRESS.screenshots.length > 0;
+const hasTrailer = PRESS.trailerUrl.length > 0;
+const hasSteam = AFTERSHOCK.steamUrl.length > 0;
+
+const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
+
+const studioFacts: [string, string][] = [
+  ['Studio', SITE.name],
+  ['Founded', String(SITE.founded)],
+  ['Team size', 'One — solo developer'],
+  ['Press contact', CONTACT.email],
+  ['Website', SITE.url.replace('https://', '')],
+  ['Response time', CONTACT.responseTime],
+];
+
+const gameFacts: [string, string][] = [
+  ['Title', AFTERSHOCK.title],
+  ['Developer', SITE.name],
+  ['Publisher', 'Self-published'],
+  ['Status', AFTERSHOCK.status],
+  ['Release', 'To be announced'],
+  ['Price', 'To be announced'],
+  ...AFTERSHOCK.specs.map(([k, v]) => [k, v] as [string, string]),
+];
+
+const blocks = [
+  { id: 'short', label: 'Short', hint: 'One line', text: PRESS.descriptions.short },
+  { id: 'medium', label: 'Medium', hint: '~45 words', text: PRESS.descriptions.medium },
+  { id: 'long', label: 'Long', hint: '~120 words', text: PRESS.descriptions.long },
+];
+---
+
+<BaseLayout
+  title="Press kit"
+  description={`Press kit for ${SITE.name} and ${AFTERSHOCK.title} — fact sheet, boilerplate descriptions, brand assets and monetisation permissions.`}
+>
+  <div class="container container--md page">
+    <Eyebrow>// Press</Eyebrow>
+    <h1 class="page__title">Press kit</h1>
+    <p class="page__lede">
+      Everything you need to write about {AFTERSHOCK.title} or {SITE.name}, cleared for use today.
+      No embargo, no NDA, no need to ask first.
+    </p>
+
+    <div class="tags">
+      {AFTERSHOCK.genres.map((genre) => <Tag>{genre}</Tag>)}
+    </div>
+
+    <div class="actions">
+      <Button size="lg" href={`mailto:${CONTACT.email}?subject=Press%20enquiry`} leadingIcon="mail">
+        Email press
+      </Button>
+      {
+        hasSteam && (
+          <Button size="lg" variant="ghost" href={AFTERSHOCK.steamUrl} external leadingIcon="external-link">
+            Steam page
+          </Button>
+        )
+      }
+    </div>
+
+    <!-- ================= FACT SHEETS ================= -->
+    <section class="section">
+      <Eyebrow>// Fact sheet</Eyebrow>
+      <h2 class="section__title">The studio</h2>
+      <dl class="specs">
+        {
+          studioFacts.map(([key, value]) => (
+            <div class="spec">
+              <dt class="spec__key">{key}</dt>
+              <dd class="spec__value">{value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <h2 class="section__title section__title--spaced">{AFTERSHOCK.title}</h2>
+      <p class="section__lede">{AFTERSHOCK.tagline}</p>
+      <dl class="specs">
+        {
+          gameFacts.map(([key, value]) => (
+            <div class="spec">
+              <dt class="spec__key">{key}</dt>
+              <dd class="spec__value">{value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <!-- ================= BOILERPLATE ================= -->
+    <section class="section">
+      <Eyebrow>// Boilerplate</Eyebrow>
+      <h2 class="section__title">Descriptions</h2>
+      <p class="section__lede">
+        Written to be pasted as-is into an article, video description or store listing.
+      </p>
+
+      <div class="blocks">
+        {
+          blocks.map((block) => (
+            <article class="block">
+              <header class="block__head">
+                <span class="block__label">{block.label}</span>
+                <span class="block__hint">{block.hint}</span>
+                {/* Enhanced by the script below; without JS the text is still
+                    selectable, so nothing is lost. */}
+                <button type="button" class="block__copy" data-copy={block.id} hidden>
+                  Copy
+                </button>
+              </header>
+              <div class="block__body" id={`copy-${block.id}`}>
+                {block.text.split('\n\n').map((para) => (
+                  <p>{para}</p>
+                ))}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ================= MEDIA ================= -->
+    <section class="section">
+      <Eyebrow>// Media</Eyebrow>
+      <h2 class="section__title">Screenshots &amp; video</h2>
+
+      {
+        hasShots ? (
+          <div class="shots">
+            {PRESS.screenshots.map((shot) => (
+              <a href={shot.file} class="shot" target="_blank" rel="noopener noreferrer">
+                <img src={shot.file} alt={shot.alt} loading="lazy" />
+              </a>
+            ))}
+          </div>
+        ) : (
+          /* No screenshots yet. Say so plainly and give them a way to get them
+             early — a padded-out gallery of logo crops would waste their time
+             and ours. */
+          <div class="empty">
+            <span class="empty__icon"><Icon name="box" size={22} /></span>
+            <div>
+              <p class="empty__title">Not published yet</p>
+              <p class="empty__body">
+                {AFTERSHOCK.title} is pre-announcement, so there's no screenshot pack here yet.
+                If you're covering the game and need media before it's public, email{' '}
+                <a href={`mailto:${CONTACT.email}?subject=Press%20media%20request`}>
+                  {CONTACT.email}
+                </a>{' '}
+                — press gets it first.
+              </p>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        hasTrailer && (
+          <p class="section__lede">
+            <a href={PRESS.trailerUrl} target="_blank" rel="noopener noreferrer">
+              Watch the trailer
+            </a>
+          </p>
+        )
+      }
+    </section>
+
+    <!-- ================= BRAND ASSETS ================= -->
+    <section class="section">
+      <Eyebrow>// Assets</Eyebrow>
+      <h2 class="section__title">Logos &amp; brand</h2>
+      <p class="section__lede">Right-click to save, or open in a new tab for the full-size file.</p>
+
+      <div class="assets">
+        {
+          PRESS.assets.map((asset) => (
+            <a class="asset" href={asset.file} download target="_blank" rel="noopener noreferrer">
+              <span class="asset__preview">
+                <img src={asset.file} alt="" loading="lazy" />
+              </span>
+              <span class="asset__meta">
+                <span class="asset__label">{asset.label}</span>
+                <span class="asset__detail">{asset.detail}</span>
+              </span>
+              <span class="asset__icon"><Icon name="arrow-right" size={16} /></span>
+            </a>
+          ))
+        }
+      </div>
+
+      <h3 class="subhead">Palette</h3>
+      <div class="palette">
+        {
+          PRESS.palette.map(([name, hex, role]) => (
+            <div class="swatch">
+              <span class="swatch__chip" style={`background: ${hex}`} aria-hidden="true" />
+              <span class="swatch__name">{name}</span>
+              <span class="swatch__hex">{hex}</span>
+              <span class="swatch__role">{role}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <h3 class="subhead">Typefaces</h3>
+      <dl class="specs">
+        <div class="spec">
+          <dt class="spec__key">Display</dt>
+          <dd class="spec__value">Chakra Petch</dd>
+        </div>
+        <div class="spec">
+          <dt class="spec__key">Body</dt>
+          <dd class="spec__value">IBM Plex Sans</dd>
+        </div>
+        <div class="spec">
+          <dt class="spec__key">Labels</dt>
+          <dd class="spec__value">IBM Plex Mono</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ================= PERMISSIONS ================= -->
+    <section class="section">
+      <Eyebrow>// Permissions</Eyebrow>
+      <h2 class="section__title">What you're allowed to do</h2>
+
+      <ul class="perms" role="list">
+        {
+          PRESS.permissions.map((perm) => (
+            <li class="perm">
+              <span class="perm__icon"><Icon name="check-circle" size={18} /></span>
+              <span>{perm}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+    <section class="section">
+      <Eyebrow>// Contact</Eyebrow>
+      <h2 class="section__title">Get in touch</h2>
+      <p class="section__lede">
+        Solo operation — expect a reply {CONTACT.responseTime}.
+      </p>
+
+      <div class="links">
+        <a href={`mailto:${CONTACT.email}?subject=Press%20enquiry`} class="link">
+          <span class="link__icon"><Icon name="mail" size={18} /></span>
+          <span>
+            <span class="link__label">Press</span>
+            <span class="link__value">{CONTACT.email}</span>
+          </span>
+        </a>
+        {
+          socials.map((social) => (
+            <a
+              href={social.href}
+              class="link"
+              target={social.href.startsWith('http') ? '_blank' : undefined}
+              rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            >
+              <span class="link__icon"><Icon name={social.icon} size={18} /></span>
+              <span>
+                <span class="link__label">{social.label}</span>
+                <span class="link__value">{social.value}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: var(--space-11) var(--space-12);
+  }
+
+  .page__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(36px, 6vw, 48px);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin: var(--space-4) 0 var(--space-6);
+  }
+
+  .page__lede {
+    font-size: 19px;
+    line-height: var(--lh-relaxed);
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .actions {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-top: var(--space-7);
+  }
+
+  /* ---- SECTIONS ---- */
+
+  .section {
+    margin-top: var(--space-11);
+  }
+
+  .section__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--text-2xl);
+    color: var(--text-primary);
+    margin: var(--space-4) 0 var(--space-5);
+  }
+
+  .section__title--spaced {
+    margin-top: var(--space-10);
+  }
+
+  .section__lede {
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-6);
+    max-width: 620px;
+  }
+
+  .subhead {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin: var(--space-9) 0 var(--space-5);
+  }
+
+  /* ---- SPEC GRID (matches the game page) ---- */
+
+  .specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .spec {
+    background: var(--surface-2);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .spec__key {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .spec__value {
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    margin: 6px 0 0;
+    word-break: break-word;
+  }
+
+  /* ---- BOILERPLATE ---- */
+
+  .blocks {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .block {
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .block__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .block__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--ember-400);
+  }
+
+  .block__hint {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    margin-right: auto;
+  }
+
+  .block__copy {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    cursor: pointer;
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .block__copy:hover {
+    color: var(--cyan-400);
+    border-color: var(--cyan-600);
+  }
+
+  .block__copy[data-copied] {
+    color: var(--success-500);
+    border-color: var(--success-500);
+  }
+
+  .block__body {
+    padding: var(--space-6);
+  }
+
+  .block__body :global(p) {
+    color: var(--text-body);
+    line-height: var(--lh-relaxed);
+    margin: 0;
+  }
+
+  .block__body :global(p + p) {
+    margin-top: var(--space-4);
+  }
+
+  /* ---- MEDIA ---- */
+
+  .shots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .shot img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .empty {
+    display: flex;
+    gap: var(--space-5);
+    align-items: flex-start;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--pad-card);
+  }
+
+  .empty__icon {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    background: var(--ember-tint);
+    color: var(--ember-400);
+    flex-shrink: 0;
+  }
+
+  .empty__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--text-md);
+    color: var(--text-primary);
+    margin: 0 0 6px;
+  }
+
+  .empty__body {
+    color: var(--text-secondary);
+    font-size: 14.5px;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  /* ---- ASSETS ---- */
+
+  .assets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .asset {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      background var(--dur-fast) var(--ease-out);
+  }
+
+  .asset:hover {
+    border-color: var(--cyan-600);
+    background: var(--surface-raised);
+  }
+
+  .asset__preview {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--ink-900);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .asset__preview img {
+    max-width: 32px;
+    max-height: 32px;
+    width: auto;
+    height: auto;
+  }
+
+  .asset__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-right: auto;
+    min-width: 0;
+  }
+
+  .asset__label {
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+  }
+
+  .asset__detail {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .asset__icon {
+    color: var(--text-muted);
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  .asset:hover .asset__icon {
+    color: var(--cyan-400);
+  }
+
+  /* ---- PALETTE ---- */
+
+  .palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  .swatch__chip {
+    height: 44px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: var(--space-3);
+  }
+
+  .swatch__name {
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+  }
+
+  .swatch__hex {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--cyan-400);
+  }
+
+  .swatch__role {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  /* ---- PERMISSIONS ---- */
+
+  .perms {
+    display: grid;
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .perm {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    color: var(--text-body);
+    line-height: 1.65;
+  }
+
+  .perm__icon {
+    color: var(--success-500);
+    display: inline-flex;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ---- CONTACT LINKS ---- */
+
+  .links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .link:hover {
+    border-color: var(--cyan-600);
+  }
+
+  .link__icon {
+    color: var(--cyan-400);
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  .link__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .link__value {
+    display: block;
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    margin-top: 2px;
+    word-break: break-word;
+  }
+
+  @media (max-width: 720px) {
+    .page {
+      padding-top: var(--space-9);
+    }
+
+    .empty {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  // Copy-to-clipboard for the boilerplate. The buttons ship hidden and are
+  // revealed here, so a browser without the Clipboard API never shows a
+  // control that wouldn't work — the text stays selectable either way.
+  if (navigator.clipboard) {
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+      const source = document.getElementById(`copy-${button.dataset.copy}`);
+      if (!source) return;
+
+      button.hidden = false;
+
+      button.addEventListener('click', async () => {
+        // innerText, not textContent — it collapses the markup back into the
+        // paragraph breaks a reader would expect when pasting.
+        try {
+          await navigator.clipboard.writeText(source.innerText.trim());
+          button.textContent = 'Copied';
+          button.dataset.copied = 'true';
+          setTimeout(() => {
+            button.textContent = 'Copy';
+            delete button.dataset.copied;
+          }, 2000);
+        } catch {
+          button.textContent = 'Press ⌘C';
+        }
+      });
+    });
+  }
+</script>
