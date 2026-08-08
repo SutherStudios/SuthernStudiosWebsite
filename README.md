@@ -76,24 +76,55 @@ automatically.
 
 ## Wiring up the forms
 
-The contact and newsletter forms are **built but not connected**. Until an
-endpoint is set they render disabled, with the contact form pointing visitors at
-the email address instead — so nobody types a message into a void.
+Both forms are **live**, posting to [Web3Forms](https://web3forms.com) — see
+`FORMS` in `src/config.ts`.
 
-To connect them, sign up with [Formspree](https://formspree.io) or
-[Web3Forms](https://web3forms.com) (both have free tiers and work on static
-hosting), then paste the endpoints into `src/config.ts`:
+They degrade honestly in both directions. Clear the endpoint in config and they
+revert to a disabled state, with the contact form pointing visitors at the email
+address instead, so nobody types a message into a void. Turn JavaScript off and
+they fall back to a native POST, with the provider rendering its own
+confirmation page.
+
+To repoint them at a different account or provider, edit `FORMS`. Both
+[Formspree](https://formspree.io) and Web3Forms are supported by the same code
+path — both have free tiers and work on static hosting.
+
+**Formspree** — create one form per destination and paste its endpoint. Leave
+`accessKey` empty:
 
 ```ts
 export const FORMS = {
   contactEndpoint: 'https://formspree.io/f/xxxxxxxx',
   newsletterEndpoint: 'https://formspree.io/f/yyyyyyyy',
+  accessKey: '',
 } as const;
 ```
 
-That's the only change needed — the forms enable themselves, the disabled-state
-notice disappears, and both post their existing named fields (`name`, `email`,
-`subject`, `message`).
+**Web3Forms** — both forms post to the same submit URL; your access key goes in
+`accessKey` and is rendered as the hidden `access_key` field:
+
+```ts
+export const FORMS = {
+  contactEndpoint: 'https://api.web3forms.com/submit',
+  newsletterEndpoint: 'https://api.web3forms.com/submit',
+  accessKey: 'your-uuid-here',
+} as const;
+```
+
+The two endpoints are separate so contact messages and newsletter signups can
+land in different inboxes — point them at the same URL if you'd rather they
+didn't.
+
+**Fields posted.** Contact sends `name`, `email`, `subject`, `message`.
+Newsletter sends `email`. Both add a hidden subject line (`_subject` for
+Formspree, `subject` for Web3Forms) and two honeypots (`_gotcha`, `botcheck`) —
+one per provider convention, so whichever backend you pick drops the bots.
+
+**Submission behaviour.** [`src/scripts/forms.ts`](src/scripts/forms.ts)
+upgrades each form to an inline `fetch` submit, so the visitor stays on the site
+and gets a success panel instead of the provider's thank-you page. It's
+progressive enhancement — with JavaScript disabled the forms still POST natively
+and the provider renders its own confirmation.
 
 ---
 
@@ -178,7 +209,8 @@ Search `src/config.ts` for `TODO`. Outstanding:
 - [ ] **Social handles** — verify the Twitter/X handle and add the real Discord
       invite in `SOCIALS`. Entries left at `'#'` are automatically hidden rather
       than shipped as dead links.
-- [ ] **Form endpoints** — see *Wiring up the forms* above.
+- [x] **Form endpoints** — done; both forms post to Web3Forms. See *Wiring up
+      the forms* above.
 - [ ] **Fonts** — currently loaded from the Google Fonts CDN. Self-hosting the
       `.woff2` files would remove a third-party request and the associated
       privacy/latency cost.

@@ -2,10 +2,14 @@
 /**
  * Contact.
  *
- * The form is fully built but posts nowhere until FORMS.contactEndpoint is set
- * in src/config.ts. While unwired it renders disabled with a pointer to the
- * email address, so nobody types a message into a void. Fill in the endpoint
- * and it enables itself — see README § Wiring up the forms.
+ * Live — the form posts to Web3Forms (FORMS.contactEndpoint in src/config.ts)
+ * and is enhanced by src/scripts/forms.ts into an inline submit, so the visitor
+ * gets the success panel below without leaving the page. With JavaScript off it
+ * falls back to a native POST and the provider renders its own confirmation.
+ *
+ * The `wired` checks below are not dead weight: clear the endpoint in config
+ * and the whole page reverts to an honest disabled state that points at the
+ * email address instead — see README § Wiring up the forms.
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -16,6 +20,7 @@ import { CONTACT, FORMS, SOCIALS } from '../config';
 
 const endpoint = FORMS.contactEndpoint;
 const wired = endpoint.length > 0;
+const accessKey = FORMS.accessKey;
 
 const subjects = [
   'General inquiry',
@@ -44,6 +49,7 @@ const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
       <div class="panel">
         <form
           class="form"
+          data-form="contact"
           action={wired ? endpoint : undefined}
           method={wired ? 'POST' : undefined}
         >
@@ -59,62 +65,104 @@ const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
             )
           }
 
-          <div class="form__row">
-            <div class="field">
-              <label class="field__label" for="name">Name</label>
-              <input
-                class="field__input"
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Your name"
-                autocomplete="name"
-                required
-                disabled={!wired}
-              />
+          {/* Success panel — swapped in by the submit handler. tabindex lets it
+              receive focus so the confirmation is announced. */}
+          <div class="form__success" data-form-success tabindex="-1" hidden>
+            <span class="form__success-icon"><Icon name="check-circle" size={40} /></span>
+            <h2 class="form__success-title">Transmission sent</h2>
+            <p class="form__success-body">Expect a reply {CONTACT.responseTime}.</p>
+          </div>
+
+          <div class="form__fields" data-form-fields>
+            {accessKey && <input type="hidden" name="access_key" value={accessKey} />}
+
+            {/* Formspree reads `_subject` for the email subject line; Web3Forms
+                uses the visitor's `subject` selection below. */}
+            <input type="hidden" name="_subject" value="Suthern Studios — new contact message" />
+
+            {/* Honeypots. Bots fill these; humans never see them. Both provider
+                conventions are present so either backend catches the spam. */}
+            <div class="form__hp" aria-hidden="true">
+              <label>
+                Leave this field empty
+                <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+              </label>
+              <label>
+                <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" />
+              </label>
+            </div>
+
+            <div class="form__row">
+              <div class="field">
+                <label class="field__label" for="name">Name</label>
+                <input
+                  class="field__input"
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Your name"
+                  autocomplete="name"
+                  required
+                  disabled={!wired}
+                />
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="email">Email</label>
+                <input
+                  class="field__input"
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="you@email.com"
+                  autocomplete="email"
+                  required
+                  disabled={!wired}
+                />
+              </div>
             </div>
 
             <div class="field">
-              <label class="field__label" for="email">Email</label>
-              <input
-                class="field__input"
-                type="email"
-                id="email"
-                name="email"
-                placeholder="you@email.com"
-                autocomplete="email"
+              <label class="field__label" for="subject">Subject</label>
+              <div class="field__select-wrap">
+                <select
+                  class="field__input field__select"
+                  id="subject"
+                  name="subject"
+                  disabled={!wired}
+                >
+                  {subjects.map((subject) => <option value={subject}>{subject}</option>)}
+                </select>
+                <span class="field__chevron" aria-hidden="true">▾</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="message">Message</label>
+              <textarea
+                class="field__input field__textarea"
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="Type your message…"
                 required
+                disabled={!wired}></textarea>
+            </div>
+
+            <p class="form__status" data-form-status role="status" aria-live="polite" hidden></p>
+
+            <div>
+              <Button
+                type="submit"
+                size="lg"
+                chamfer
+                leadingIcon="send"
                 disabled={!wired}
-              />
+                data-form-submit
+              >
+                Transmit
+              </Button>
             </div>
-          </div>
-
-          <div class="field">
-            <label class="field__label" for="subject">Subject</label>
-            <div class="field__select-wrap">
-              <select class="field__input field__select" id="subject" name="subject" disabled={!wired}>
-                {subjects.map((subject) => <option value={subject}>{subject}</option>)}
-              </select>
-              <span class="field__chevron" aria-hidden="true">▾</span>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="field__label" for="message">Message</label>
-            <textarea
-              class="field__input field__textarea"
-              id="message"
-              name="message"
-              rows="5"
-              placeholder="Type your message…"
-              required
-              disabled={!wired}></textarea>
-          </div>
-
-          <div>
-            <Button type="submit" size="lg" chamfer leadingIcon="send" disabled={!wired}>
-              Transmit
-            </Button>
           </div>
         </form>
       </div>
@@ -190,10 +238,71 @@ const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
     box-shadow: var(--shadow-2);
   }
 
-  .form {
+  .form,
+  .form__fields {
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
+  }
+
+  /* ---- HONEYPOT ---- */
+
+  /* Off-screen rather than display:none — some bots skip hidden inputs. */
+  .form__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /* ---- STATUS + SUCCESS ---- */
+
+  .form__status {
+    margin: 0;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+
+  .form__status[data-tone='error'] {
+    background: var(--danger-tint);
+    border-left: 3px solid var(--danger-500);
+    color: var(--text-body);
+  }
+
+  .form__status[data-tone='success'] {
+    background: var(--success-tint);
+    border-left: 3px solid var(--success-500);
+    color: var(--text-body);
+  }
+
+  .form__success {
+    padding: var(--space-9) 0;
+    text-align: center;
+  }
+
+  .form__success:focus {
+    outline: none;
+  }
+
+  .form__success-icon {
+    color: var(--success-500);
+    display: inline-flex;
+  }
+
+  .form__success-title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: 22px;
+    color: var(--text-primary);
+    margin: var(--space-5) 0 6px;
+  }
+
+  .form__success-body {
+    color: var(--text-secondary);
+    margin: 0;
   }
 
   .form__notice {
@@ -399,3 +508,8 @@ const socials = SOCIALS.filter((s) => s.href && s.href !== '#');
     }
   }
 </style>
+
+<script>
+  import { initForms } from "../scripts/forms";
+  initForms();
+</script>

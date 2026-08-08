@@ -2,10 +2,10 @@
 /**
  * Newsletter — the "get the devlog" capture block that closes most pages.
  *
- * The form is fully built but posts nowhere until FORMS.newsletterEndpoint is
- * set in src/config.ts. While unwired it renders in an honest disabled state
- * rather than silently swallowing addresses — fill in the endpoint and it
- * enables itself with no other change.
+ * Live — posts to Web3Forms (FORMS.newsletterEndpoint in src/config.ts) and is
+ * enhanced by src/scripts/forms.ts into an inline submit. Clear the endpoint in
+ * config and it reverts to an honest disabled state rather than silently
+ * swallowing addresses.
  */
 
 import { FORMS } from '../config';
@@ -14,6 +14,11 @@ import Eyebrow from './Eyebrow.astro';
 
 const endpoint = FORMS.newsletterEndpoint;
 const wired = endpoint.length > 0;
+const accessKey = FORMS.accessKey;
+
+// The block renders on most pages, so ids must be unique per instance or the
+// labels bind to whichever copy the browser saw first.
+const uid = `newsletter-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
 <section class="section--tight">
@@ -31,23 +36,50 @@ const wired = endpoint.length > 0;
 
       <form
         class="newsletter__form"
+        data-form="newsletter"
         action={wired ? endpoint : undefined}
         method={wired ? 'POST' : undefined}
       >
-        <div class="newsletter__field">
-          <label class="newsletter__label" for="newsletter-email">Email</label>
-          <input
-            class="newsletter__input"
-            type="email"
-            id="newsletter-email"
-            name="email"
-            placeholder="you@email.com"
-            autocomplete="email"
-            required
-            disabled={!wired}
-          />
+        <p class="newsletter__success" data-form-success tabindex="-1" hidden>
+          &gt; Subscribed. Welcome aboard.
+        </p>
+
+        <div class="newsletter__fields" data-form-fields>
+          {accessKey && <input type="hidden" name="access_key" value={accessKey} />}
+
+          {/* Email subject line. Formspree reads `_subject`, Web3Forms reads
+              `subject` — send both so either backend labels the mail. */}
+          <input type="hidden" name="_subject" value="Suthern Studios — newsletter signup" />
+          <input type="hidden" name="subject" value="Suthern Studios — newsletter signup" />
+
+          <div class="newsletter__hp" aria-hidden="true">
+            <label>
+              Leave this field empty
+              <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+            </label>
+            <label>
+              <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" />
+            </label>
+          </div>
+
+          <div class="newsletter__field">
+            <label class="newsletter__label" for={uid}>Email</label>
+            <input
+              class="newsletter__input"
+              type="email"
+              id={uid}
+              name="email"
+              placeholder="you@email.com"
+              autocomplete="email"
+              required
+              disabled={!wired}
+            />
+          </div>
+
+          <Button type="submit" disabled={!wired} data-form-submit>Subscribe</Button>
         </div>
-        <Button type="submit" disabled={!wired}>Subscribe</Button>
+
+        <p class="newsletter__status" data-form-status role="status" aria-live="polite" hidden></p>
       </form>
 
       {
@@ -104,10 +136,47 @@ const wired = endpoint.length > 0;
 
   .newsletter__form {
     flex: 1 1 300px;
+    position: relative;
+  }
+
+  .newsletter__fields {
     display: flex;
     gap: 10px;
     align-items: flex-end;
-    position: relative;
+  }
+
+  .newsletter__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .newsletter__success {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--success-500);
+  }
+
+  .newsletter__success:focus {
+    outline: none;
+  }
+
+  .newsletter__status {
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1.6;
+  }
+
+  .newsletter__status[data-tone='error'] {
+    color: var(--danger-500);
+  }
+
+  .newsletter__status[data-tone='success'] {
+    color: var(--success-500);
   }
 
   .newsletter__field {
@@ -174,9 +243,14 @@ const wired = endpoint.length > 0;
       gap: var(--space-7);
     }
 
-    .newsletter__form {
+    .newsletter__fields {
       flex-direction: column;
       align-items: stretch;
     }
   }
 </style>
+
+<script>
+  import { initForms } from '../scripts/forms';
+  initForms();
+</script>

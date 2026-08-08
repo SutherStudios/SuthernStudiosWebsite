@@ -19,6 +19,13 @@ html {
   scroll-behavior: smooth;
 }
 
+/* The `hidden` attribute only gets `display: none` from the UA stylesheet, so
+   any author `display` rule silently beats it — a flex container with [hidden]
+   stays on screen. Make the attribute mean what it says. */
+[hidden] {
+  display: none !important;
+}
+
 body,
 h1,
 h2,

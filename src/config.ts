@@ -128,12 +128,36 @@ export const AFTERSHOCK = {
 /**
  * Contact / newsletter form endpoints.
  *
- * Both are unwired by design — the markup is production-ready and posts
- * nowhere until you choose a provider. To go live with Formspree or
- * Web3Forms, paste the endpoint URL here and the forms start working with no
- * other changes (see README § Wiring up the forms).
+ * Currently live on Web3Forms. Everything around these — validation, submit
+ * handling, success and error states, spam honeypots — lives in the components
+ * and src/scripts/forms.ts. Blank either endpoint and that form reverts to a
+ * disabled state; no other change needed.
+ *
+ * Works with either provider (see README § Wiring up the forms):
+ *
+ *   Formspree  → paste the form's endpoint URL. Leave accessKey empty.
+ *                contactEndpoint: 'https://formspree.io/f/xxxxxxxx'
+ *
+ *   Web3Forms  → use the shared submit URL for both, and put your key in
+ *                accessKey. One key covers every form on the site.
+ *                contactEndpoint: 'https://api.web3forms.com/submit'
+ *                newsletterEndpoint: 'https://api.web3forms.com/submit'
+ *                accessKey: 'your-uuid-here'
+ *
+ * The two endpoints are separate so contact messages and newsletter signups
+ * can land in different inboxes — point them at the same URL if you'd rather
+ * they didn't.
  */
 export const FORMS = {
-  contactEndpoint: '', // e.g. 'https://formspree.io/f/xxxxxxxx'
-  newsletterEndpoint: '', // e.g. 'https://formspree.io/f/yyyyyyyy'
+  contactEndpoint: 'https://api.web3forms.com/submit',
+  newsletterEndpoint: 'https://api.web3forms.com/submit',
+  /**
+   * Web3Forms only — rendered as the hidden `access_key` field.
+   *
+   * Public by design: it ships in the built HTML either way, and Web3Forms
+   * documents it as safe to expose (worst case, someone can email you). Spam
+   * defence is the honeypots here plus the provider's own filtering — not
+   * secrecy. See README § Wiring up the forms.
+   */
+  accessKey: '6556eada-c24e-439d-a639-5da9538e4bb0',
 } as const;
