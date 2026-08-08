@@ -16,7 +16,20 @@ function isCurrent(href: string): boolean {
   return pathname === href || pathname.startsWith(href);
 }
 
-const wishlistHref = AFTERSHOCK.steamUrl || '/games/';
+/**
+ * The header CTA follows whatever the strongest available ask is.
+ *
+ * With a Steam page, that's a wishlist — the thing Valve actually weights at
+ * launch. Without one, asking for a wishlist would be a button that can't do
+ * what it says, so it asks for an email instead and points at the newsletter
+ * block. Paste steamUrl into config and this flips back on its own.
+ *
+ * The link is absolute because the newsletter doesn't render on every page
+ * (contact and 404 have no #updates to jump to).
+ */
+const hasSteam = AFTERSHOCK.steamUrl.length > 0;
+const ctaHref = hasSteam ? AFTERSHOCK.steamUrl : '/#updates';
+const ctaLabel = hasSteam ? 'Wishlist' : 'Get updates';
 ---
 
 <header class="nav">
@@ -54,13 +67,8 @@ const wishlistHref = AFTERSHOCK.steamUrl || '/games/';
           ))
         }
       </ul>
-      <Button
-        size="sm"
-        href={wishlistHref}
-        external={Boolean(AFTERSHOCK.steamUrl)}
-        class="nav__cta"
-      >
-        Wishlist
+      <Button size="sm" href={ctaHref} external={hasSteam} class="nav__cta">
+        {ctaLabel}
       </Button>
     </div>
   </div>

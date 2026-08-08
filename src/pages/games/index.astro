@@ -66,18 +66,29 @@ const hasKeyArt = AFTERSHOCK.keyArt.length > 0;
         <p class="hero__tagline">{AFTERSHOCK.tagline}</p>
         <p class="hero__summary">{AFTERSHOCK.summary}</p>
 
+        {/* Until there's a Steam page, the primary CTA asks for the next best
+            thing rather than rendering a disabled button. A greyed-out "Steam
+            page soon" spends the visitor's interest on nothing; the signup
+            keeps it. Flips to a wishlist link the moment steamUrl is set. */}
         <div class="hero__actions">
           <Button
             size="lg"
-            href={hasSteam ? AFTERSHOCK.steamUrl : undefined}
+            href={hasSteam ? AFTERSHOCK.steamUrl : '#updates'}
             external={hasSteam}
-            disabled={!hasSteam}
-            leadingIcon="heart"
+            leadingIcon={hasSteam ? 'heart' : 'mail'}
           >
-            {hasSteam ? 'Wishlist on Steam' : 'Steam page soon'}
+            {hasSteam ? 'Wishlist on Steam' : 'Get launch updates'}
           </Button>
           <Button size="lg" variant="ghost" href="/devlog/" leadingIcon="rss">Follow dev</Button>
         </div>
+
+        {
+          !hasSteam && (
+            <p class="hero__note">
+              Steam page coming soon — subscribers hear the moment wishlists open.
+            </p>
+          )
+        }
       </div>
     </div>
 
@@ -273,6 +284,14 @@ const hasKeyArt = AFTERSHOCK.keyArt.length > 0;
     display: flex;
     gap: var(--space-4);
     flex-wrap: wrap;
+  }
+
+  .hero__note {
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
   }
 
   /* ---- SECTIONS ---- */

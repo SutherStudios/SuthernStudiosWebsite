@@ -21,7 +21,10 @@ const accessKey = FORMS.accessKey;
 const uid = `newsletter-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
-<section class="section--tight">
+{/* id="updates" is the site's signup anchor — the nav and the game page's
+    primary CTA both point here while there's no Steam page to send people to.
+    Renaming it breaks those links. */}
+<section class="section--tight" id="updates">
   <div class="container">
     <div class="newsletter">
       <span class="newsletter__glow" aria-hidden="true"></span>
@@ -94,6 +97,18 @@ const uid = `newsletter-${Math.random().toString(36).slice(2, 9)}`;
 </section>
 
 <style>
+  /* Clears the sticky nav when arriving via #updates, so the block lands in
+     view instead of tucked underneath it. */
+  #updates {
+    scroll-margin-top: 88px;
+  }
+
+  /* Confirms the jump landed — without it, arriving from another page reads as
+     "nothing happened" on a long page. */
+  #updates:target .newsletter {
+    border-color: var(--ember-500);
+  }
+
   .newsletter {
     position: relative;
     overflow: hidden;
