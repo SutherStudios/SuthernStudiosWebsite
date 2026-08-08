@@ -71,7 +71,7 @@ export const AFTERSHOCK = {
   status: 'In development',
   summary:
     'A post-apocalyptic colony simulation where you guide survivors through a procedurally generated wasteland — building shelter, managing needs, crafting tools, and defending against raids.',
-  genres: ['Colony sim', 'Survival', 'Strategy', 'Base building', 'Pixel art'],
+  genres: ['Colony sim', 'Survival', 'Strategy', 'Base building', 'Voxel art'],
   /**
    * Real key art, once it exists — drop a 16:9 image in public/assets/ and put
    * the path here (e.g. '/assets/aftershock-key-art.png'). While this is empty
@@ -82,9 +82,11 @@ export const AFTERSHOCK = {
   keyArt: '',
   steamUrl: '', // TODO: paste the Steam store URL — the wishlist CTA disables itself while this is empty
   specs: [
-    ['Engine', 'Unity · URP'],
+    ['Engine', 'Unity 6 · URP'],
     ['Language', 'C#'],
-    ['Tile size', '32 × 32'],
+    ['Art', '3D voxel'],
+    ['Voxel size', '1 unit cube'],
+    ['Face texture', '16 × 16'],
     ['Platform', 'PC · Steam'],
     ['Status', 'Early Access soon'],
     ['Modding', 'Full rights, day one'],
